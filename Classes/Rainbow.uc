@@ -5,12 +5,25 @@ var xEmitter Poop;
 
 simulated function PostBeginPlay()
 {
-    // AttachToPawn(Pawn(Owner));
-    Poop = Spawn(class'RainbowPoop', self);
-    Owner.AttachToBone(Poop, 'spine');
-    Poop.SetRelativeRotation(Owner.Rotation);
-    Poop.Lifespan = Lifespan;
+    // Poop = Spawn(class'SpeedTrail', self,, self.Location, self.Rotation);
+    // xPawn(Owner).AttachToBone(Poop, 'spine');
+    // Poop.Lifespan = Lifespan;
+    SpawnPoop();
     Super.PostBeginPlay();
+}
+
+function SpawnPoop()
+{
+    local xPawn X;
+    X = xPawn(Owner);
+
+    if (X != None)
+    {
+        Poop = Spawn(class'SpeedTrail', X,, X.Location, X.Rotation);
+        X.AttachToBone(Poop, 'spine');
+        Poop.Lifespan = Lifespan;
+    }
+
 }
 
 simulated function Destroyed()
@@ -23,7 +36,7 @@ simulated function Destroyed()
 }
 
 event Tick (float DeltaTime)
-{
+{   
     if (Pawn(Owner).Physics == PHYS_Falling)
     {
         Poop.mRegenPause = False;
@@ -62,6 +75,7 @@ event Tick (float DeltaTime)
 
 defaultproperties
 {
+    bHidden=True
     bDisplayableInv=False
     bAutoActivate=True
     bActivatable=False

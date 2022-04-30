@@ -10,6 +10,7 @@ var config bool bRainbowPoop;
 var localized string GUIDisplayText[4];
 var localized string GUIDescText[4];
 
+var xEmitter Poop;
 
 // simulated function PreBeginPlay()
 // {
@@ -20,9 +21,6 @@ simulated function PostBeginPlay()
 {
     // Allow change to gravity
     Level.DefaultGravity = Level.DefaultGravity*GravMult;
-
-    //Set default Pawn class
-    //Level.Game.DefaultPlayerClassName = "SuperJump.RainbowPoopsPawn";
 }
 
 //Check replacement
@@ -44,11 +42,11 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant)
     return true;
 }
 
-// Apply jump height to players
+// Apply jump height to players and give rainbow item
 function ModifyPlayer(Pawn Other)
 {
-    //local RainbowPoopsPawn X;
-    //X = RainbowPoopsPawn(Other);
+    local xPawn X;
+    X = xPawn(Other);
     
     if (Other != None)
     {
@@ -60,7 +58,9 @@ function ModifyPlayer(Pawn Other)
         }
         if (bRainbowPoop)
         {
-            GiveRainbow(Other);
+            GiveRainbow(X);
+            // RainbowTrail = Spawn(class'SpeedTrail', X,, X.Location, X.Rotation);
+            // Other.AttachToBone(RainbowTrail, 'lfoot');
         }
     }
     Super.ModifyPlayer(Other);
@@ -102,11 +102,13 @@ static function FillPlayInfo(PlayInfo PlayInfo)
 }
 
 //Give rainbow inventory item
-function GiveRainbow (Pawn Other)
+function GiveRainbow (xPawn Other)
 {
-    //Other.AttachEffect(class'RainbowPoop', 'spine', Other.Location, Other.Rotation);
-    Other.CreateInventory("SuperJump.Rainbow");
-}
+    // Other.CreateInventory("SuperJump.Rainbow");
+
+    Poop = Spawn(class'SpeedTrail', Other,, Other.Location, Other.Rotation);
+    Other.AttachToBone(Poop, 'spine');
+    }
 
 defaultproperties
 {
